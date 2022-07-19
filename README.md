@@ -7,12 +7,12 @@ This is a simple Python script that displays whatever you're listening to in the
 
 ![example](strawberry_discord.png)
 
-Requirements
+Disclaimer
 ------------
 
-This has been tested on Manjaro KDE with Python 3.10, Strawberry 1.0.5-2, and the standalone Discord client 0.0.18-1.
+This has only been tested on Manjaro KDE with Python 3.10, Strawberry 1.0.5-2, and the standalone Discord client 0.0.18-1.
 
-It requires the `pypresence` and `dbus-python` Python modules.  Technically, this can should work with any distro that can install those two modules and run a Python script, but feel free to open an issue if you have any successes or failures on other platforms.
+It requires the `pypresence` and `dbus-python` Python modules.  Technically, this could work with any distro that can install those two modules and run a Python script, but feel free to open an issue if you have any successes or failures on other platforms. 
 
 Installation
 -----
