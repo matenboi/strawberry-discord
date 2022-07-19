@@ -29,13 +29,13 @@ import logging
 import time
 import pypresence
 
-# Any of the keys in Clementine's metadata are valid here, but note that colons
+# Any of the keys in Strawberry's metadata are valid here, but note that colons
 # will be replaced with dashes.
 # To see a list of keys, play a song and run:
-# qdbus org.mpris.MediaPlayer2.clementine /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get \
+# qdbus org.mpris.MediaPlayer2.strawberry /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get \
 #     org.mpris.MediaPlayer2.Player Metadata
-DETAILS_STRING = '🎵 {xesam-title} ({xesam-album})'
-CLIENT_ID = 647617680072900608
+DETAILS_STRING = '🎼 {xesam-title} ({xesam-artist})'
+CLIENT_ID = 998718019549270036
 
 
 class PresenceUpdater:
@@ -53,8 +53,8 @@ class PresenceUpdater:
         while True:
             try:
                 if not self.prop_iface:
-                    self.logger.info("Connecting to Clementine.")
-                    self.player = self.bus.get_object('org.mpris.MediaPlayer2.clementine',
+                    self.logger.info("Connecting to Strawberry.")
+                    self.player = self.bus.get_object('org.mpris.MediaPlayer2.strawberry',
                                                       '/org/mpris/MediaPlayer2')
                     self.prop_iface = dbus.Interface(self.player,
                                                      dbus_interface='org.freedesktop.DBus.Properties')
@@ -64,7 +64,7 @@ class PresenceUpdater:
 
                 self.update_loop()
             except dbus.exceptions.DBusException as e:
-                self.logger.warning("Error communicating with Clementine: %s" % str(e))
+                self.logger.warning("Error communicating with Strawberry: %s" % str(e))
                 self.logger.warning("Reconnecting in 15s.")
                 self.player = None
                 self.prop_iface = None
@@ -76,7 +76,7 @@ class PresenceUpdater:
 
     def update_loop(self):
         while True:
-            self.logger.debug("Reading data from Clementine.")
+            self.logger.debug("Reading data from Strawberry.")
             try:
                 metadata = self.prop_iface.Get('org.mpris.MediaPlayer2.Player', 'Metadata')
                 position_s = self.prop_iface.Get('org.mpris.MediaPlayer2.Player', 'Position') / 1000000
@@ -94,6 +94,10 @@ class PresenceUpdater:
                 tmp_metadata = dict()
                 for key, value in metadata.items():
                     tmp_metadata[key.replace(':', '-')] = value
+                try:
+                    tmp_metadata["xesam-artist"] = tmp_metadata["xesam-artist"][0]
+                except:
+                    tmp_metadata["xesam-artist"] = ""
                 try:
                     details = DETAILS_STRING.format(**tmp_metadata)
                 except KeyError:
